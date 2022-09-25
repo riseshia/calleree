@@ -47,7 +47,14 @@ eree_called(VALUE tpval, void *ptr)
     VALUE frames[2];
     int lines[2];
     // int start, int limit, VALUE *buff, int *lines);
+
     rb_profile_frames(1, 2, frames, lines);
+
+    // Ignore none iseq frame
+    if (!RB_TYPE_P(frames[0], T_IMEMO) || !RB_TYPE_P(frames[1], T_IMEMO)) {
+      return;
+    }
+
     unsigned int callee_posnum = posnum(data, rb_profile_frame_path(frames[0]), lines[0]);
     unsigned int caller_posnum = posnum(data, rb_profile_frame_path(frames[1]), lines[1]);
 #else
